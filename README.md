@@ -1,2 +1,2 @@
 # zynaptic-web
-Simple Web Lib
+Simple Web Lib with the zynaptic connector
