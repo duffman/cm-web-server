@@ -1,5 +1,5 @@
-dist
-
+lib
+yarn.lock
 # Logs
 logs
 *.log
