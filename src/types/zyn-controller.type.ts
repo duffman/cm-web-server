@@ -1,13 +1,14 @@
 /**
  * Copyright (c) 2022 Coldmind AB - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential.
+ * This software is subject to the LGPL 2.1 License, please find
+ * the full license attached in LICENCE.md
+ *
  * @author: Patrik Forsberg <patrik.forsberg@coldmind.com>
  */
 
 import { ZynRouterCore } from "../core/zyn-router-core";
 
-export interface IMeController {
+export interface IZynController {
 	baseRoute?: string;
 	initRoutes(routes: ZynRouterCore): Promise<void>;
 }

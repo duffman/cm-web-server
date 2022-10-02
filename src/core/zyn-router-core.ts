@@ -7,7 +7,7 @@
 
 import { IZynRouteInfo }  from "../types/zyn-route-info";
 import { ZynRouteMethod } from "../types/zyn-route-method.type";
-import { IMeController }  from "../types/zyn-controller.type";
+import { IZynController } from "../types/zyn-controller.type";
 import { MePathUtils }    from "../utils/me-path.utils";
 import { Router }         from "express";
 import path               from "path";
@@ -58,7 +58,7 @@ export class ZynRouterCore {
 		);
 	}
 
-	public assignParent(parent: IMeController): void {
+	public assignParent(parent: IZynController): void {
 		this.parent = parent;
 	}
 

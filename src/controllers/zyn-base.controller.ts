@@ -4,11 +4,11 @@
  */
 
 import { IZynActionResult } from "../types/zyn-action-result.type";
-import { ZynRouterCore } from "../core/zyn-router-core";
-import { IMeController } from "../types/zyn-controller.type";
-import { Response }      from "express";
+import { ZynRouterCore }  from "../core/zyn-router-core";
+import { IZynController } from "../types/zyn-controller.type";
+import { Response }       from "express";
 
-export abstract class ZynBaseController implements IMeController {
+export abstract class ZynBaseController implements IZynController {
 	private _baseRoute: string = "";
 
 	public get baseRoute(): string {
