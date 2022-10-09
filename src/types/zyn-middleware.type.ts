@@ -6,7 +6,7 @@
  */
 
 import { NextFunction } from "express";
-import { Request } from "express";
-import { Response } from "express";
+import { Request }      from "express";
+import { Response }     from "express";
 
 export type ZynMiddleware = (req: Request, resp: Response, next: NextFunction) => Promise<void>;

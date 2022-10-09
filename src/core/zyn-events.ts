@@ -1,8 +1,5 @@
-import EventEmitter     from "events";
-import { NextFunction } from "express";
-import { Response }     from "express";
-import { Request }      from "express";
-import { IZynError }    from "../types/zyn-error.type";
+import EventEmitter  from "events";
+import { IZynError } from "../types/zyn-error.type";
 
 /*
  interface SignalBindingAsync<S, T> {
@@ -132,12 +129,12 @@ export enum ZynEventType {
 }
 
 export enum ZynLogEventType {
-	Info      = "info",
-	Warning   = "warn",
-	Error     = "error",
-	Fatal     = "fatal",
-	Debug     = "debug",
-	Verbose   = "verbose",
+	Info    = "info",
+	Warning = "warn",
+	Error   = "error",
+	Fatal   = "fatal",
+	Debug   = "debug",
+	Verbose = "verbose",
 }
 
 export interface IZynEvent<T = any> {
@@ -161,7 +158,8 @@ export class ZynEvent<T> implements IZynEvent<T> {
 		protected emitter: ZynEventEmitter,
 		public type: ZynEventType,
 		public data: IZynEventData<T>
-	) { }
+	) {
+	}
 
 	public emit(event): void {
 		if (!this.emitter) {
@@ -173,7 +171,6 @@ export class ZynEvent<T> implements IZynEvent<T> {
 }
 
 export type ZynEventHandler = (event: IZynEvent) => void;
-
 
 export interface IZynEventData<T = any> {
 	data: T
@@ -201,14 +198,12 @@ export class ZynLogEvent extends ZynEvent<IZynLogEventData> implements IZynEvent
 	}
 }
 
-
 //
 
 export class ZynEventEmitter extends EventEmitter {
 	constructor() {
 		super();
 	}
-
 
 	/**
 	 * Overriding the inherited emit method,
@@ -225,7 +220,7 @@ export class ZynEventEmitter extends EventEmitter {
 		let event: ZynLogEvent = new ZynLogEvent(this, {
 			logType: logEventType,
 			message: logEventMessage,
-			data: undefined
+			data   : undefined
 		});
 	}
 }

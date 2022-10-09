@@ -1,24 +1,25 @@
 {
-  "name": "midnight-express",
-  "version": "0.7.1",
-  "description": "Lightweight Web Server Framework built on Express",
-  "main": "lib/index.js",
-  "type": "module",
-  "repository": "https://github.com/duffman/zynaptic-web.git",
-  "author": "Coldmind AB - Patrik Forsberg <patrik@coldmind.com>",
-  "license": "MIT",
-  "private": false,
-  "dependencies": {
-    "body-parser": "^1.20.0",
-    "cors": "^2.8.5",
-    "express": "^4.18.1",
-    "tsyringe": "^4.7.0"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.3.3",
-    "@types/mocha": "^10.0.0",
-    "@types/node": "^18.7.23",
-    "chai": "^4.3.6",
-    "ts-node": "^10.9.1"
-  }
+	"name": "zynaptic-web",
+	"version": "0.7.1",
+	"description": "Lightweight Web Server Framework built on Express",
+	"main": "index.js",
+	"type": "module",
+	"repository": "https://github.com/duffman/zynaptic-web.git",
+	"author": "Coldmind AB - Patrik Forsberg <patrik@coldmind.com>",
+	"license": "MIT",
+	"private": false,
+	"dependencies": {
+		"body-parser": "^1.20.0",
+		"cors": "^2.8.5",
+		"express": "^4.18.1",
+		"tsyringe": "^4.7.0",
+		"uuid": "^9.0.0"
+	},
+	"devDependencies": {
+		"@types/chai": "^4.3.3",
+		"@types/mocha": "^10.0.0",
+		"@types/node": "^18.7.23",
+		"chai": "^4.3.6",
+		"ts-node": "^10.9.1"
+	}
 }

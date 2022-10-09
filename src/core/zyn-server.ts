@@ -6,52 +6,76 @@
  * @author: Patrik Forsberg <patrik.forsberg@coldmind.com>
  */
 
+import * as bodyParser          from "body-parser";
+import cors                     from "cors";
 import EventEmitter             from "events";
-import os, { CpuInfo }          from 'os';
-import cluster, { Worker }      from 'cluster';
+import { Express }              from "express";
+import { Router }               from "express";
+import express                  from "express";
+import { Server }               from "net";
+import { CpuInfo }              from 'os';
 import { singleton }            from "tsyringe";
-import { IZynError }            from "../types/zyn-error.type";
+import { zynMiddleware }        from "../middleware";
+import { zynRequestMiddleware } from "../middleware";
+import { IZynError }            from "../types";
+import { IZynController }       from "../types";
+import { ZynMiddleware }        from "../types";
+import { IZynServer }           from "../types";
+import ZynError                 from "../types/zyn-error";
+import { ZynErrorType }         from "../types/zyn-error.type";
 import { ZynActionResult }      from "./zyn-action-result";
 import { IZynEventData }        from "./zyn-events";
 import { IZynLogEventData }     from "./zyn-events";
 import { ZynEventType }         from "./zyn-events";
-import { ZynEventHandler }      from "./zyn-events";
-import { IZynEvent }            from "./zyn-events";
-import { ZynEventEmitter }      from "./zyn-events";
 import { ZynRouterCore }        from "./zyn-router-core";
-import { zynMiddleware }        from "../middleware/zyn.middleware";
-import { zynRequestMiddleware } from "../middleware/zyn-request.middleware";
-import { IZynController }       from "../types/zyn-controller.type";
-import { ZynMiddleware }        from "../types/zyn-middleware.type";
-import { IZynServer }           from "../types/zyn-server.type";
-import * as bodyParser          from "body-parser";
-import { Router }               from "express";
-import express                  from "express";
-import cors                     from "cors";
 
 @singleton()
 export class ZynServer extends EventEmitter implements IZynServer {
-	serverApp: express.Application;
-	server: any;
-	webRoutes   = Router();
-	controllers = new Array<IZynController>();
+	protected serverApp: express.Application;
+	protected server: Server;
+	protected webRoutes   = Router();
+	//routerCores = new Map<>();
+	protected controllers = new Array<IZynController>();
+	protected eventEmitter = new EventEmitter(
+		{
+			captureRejections: false,
+		}
+	);
 
-	private eventEmitter = new EventEmitter({
-		captureRejections: false,
-	});
+	public useAccessLog?: boolean;
 
 	constructor(
-		private routerCore: ZynRouterCore
+		protected routerCore?: ZynRouterCore
 	) {
 		super();
-		this.serverApp = express();
-		this.serverApp.disable('x-powered-by');
-		this.serverApp.use(zynMiddleware);
-		this.serverApp.use(zynRequestMiddleware);
-		this.webRoutes.use(bodyParser.urlencoded({ extended: true }));
-		this.serverApp.use(this.webRoutes);
 
-		routerCore.setRouter(this.webRoutes);
+		this.serverApp = this.createServer();
+
+		/*
+		 this.serverApp = express();
+		 this.serverApp.disable('x-powered-by');
+		 this.serverApp.use(zynMiddleware);
+		 this.serverApp.use(zynRequestMiddleware);
+		 this.webRoutes.use(bodyParser.urlencoded({ extended: true }));
+		 this.serverApp.use(this.webRoutes);
+		 routerCore.setRouter(this.webRoutes);
+		 */
+	}
+
+	private createServer(): Express {
+		if (!this.routerCore) {
+			new ZynError("No RouterCore have been assigned.")
+				.setType(ZynErrorType.InternalError).throw();
+		}
+
+		let server = express();
+		server.disable('x-powered-by');
+		server.use(zynRequestMiddleware);
+		server.use(bodyParser.urlencoded({ extended: true }));
+		server.use(this.webRoutes);
+		this.routerCore.setRouter(this.webRoutes);
+
+		return server;
 	}
 
 	public onError(eventHandler: (event: IZynError) => void): IZynServer {
@@ -69,9 +93,10 @@ export class ZynServer extends EventEmitter implements IZynServer {
 		return this;
 	}
 
-	public testEvent() {
-		this.emit(ZynEventType.Log, "balle", "kalle", "skalle");
-		this.emit(ZynEventType.Log, "balle", "kalle", "skalle");
+	public enableAccessLogger(): IZynServer {
+		this.useAccessLog = true;
+		this.serverApp.use(zynMiddleware);
+		return this;
 	}
 
 	/**
@@ -124,9 +149,8 @@ export class ZynServer extends EventEmitter implements IZynServer {
 
 	public registerController(controller: IZynController): IZynServer {
 		try {
-			this.routerCore.assignParent(controller);
+			this.routerCore.assignController(controller);
 			controller.initRoutes(this.routerCore);
-
 			this.controllers.push(controller);
 		}
 		catch (e) {
@@ -149,16 +173,15 @@ export class ZynServer extends EventEmitter implements IZynServer {
 	}
 
 	public utilizeMultiCoreCPU(value?: boolean): IZynServer {
-		this.emit(ZynEventType.Log, "BALLE");
-		return this;
-		var cluster = require('cluster');
-		var http    = require('http');
+		this.emit(ZynEventType.Log, "utilizeMultiCoreCPU");
+		const cluster = require('cluster');
+		const http    = require('http');
 
 		const cpuCores: CpuInfo = require('os').cpus();
 
 		if (cluster.isPrimary) {
 			for (let coreIndex in cpuCores) {
-				const cpuCore = cpuCores[coreIndex];
+				const cpuCore = cpuCores[ coreIndex ];
 				cluster.fork();
 			}
 
@@ -167,6 +190,7 @@ export class ZynServer extends EventEmitter implements IZynServer {
 			});
 		}
 		else {
+
 			// Workers can share any TCP connection
 			// In this case its a HTTP server
 			http.createServer(function(req, res) {
@@ -195,7 +219,7 @@ export class ZynServer extends EventEmitter implements IZynServer {
 
 		try {
 			const hostAndPort = `${ host }:${ port }`;
-			this.server       = await this.serverApp.listen(port, host);
+			this.server       = this.serverApp.listen(port, host);
 			result.setSuccess().setMessage(`ZynServer is listening on :: "${ host }:${ port }"`);
 		}
 		catch (err) {

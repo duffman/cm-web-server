@@ -5,32 +5,36 @@
  * @author: Patrik Forsberg <patrik.forsberg@coldmind.com>
  */
 
-import { IZynRouteInfo }  from "../types/zyn-route-info";
-import { ZynRouteMethod } from "../types/zyn-route-method.type";
-import { IZynController } from "../types/zyn-controller.type";
-import { MePathUtils }    from "../utils/me-path.utils";
 import { Router }         from "express";
 import path               from "path";
 import { singleton }      from "tsyringe";
+import { IZynRouteInfo }  from "../types";
+import { ZynRouteMethod } from "../types";
+import { IZynController } from "../types";
+import { ZynPathUtils }   from "../utils/zyn-path.utils";
 
 @singleton()
 export class ZynRouterCore {
+	router: Router;
+	routesInfo                    = new Array<IZynRouteInfo>();
+	absoluteBaseUrl: string;
 	private parent: any;
 	private routeBasePath: string = undefined;
-	router: Router;
-	routesInfo               = new Array<IZynRouteInfo>();
-	absoluteBaseUrl: string;
+
+	constructor() {
+	}
 
 	public get basePath(): string {
 		return this.routeBasePath;
 	}
 
+	/**
+	 * Set the BASE_PATH/ of the currently assigned controller
+	 * @param {string} value
+	 */
 	public set basePath(value: string) {
-		value = MePathUtils.stripTrailingAndLeadingSlashes(value);
+		value              = ZynPathUtils.stripTrailingAndLeadingSlashes(value);
 		this.routeBasePath = `/${ path }/`;
-	}
-
-	constructor() {
 	}
 
 	/**
@@ -39,43 +43,31 @@ export class ZynRouterCore {
 	 * @param {string} absUrl
 	 */
 	public setSetAbsoluteBaseUrl(absUrl: string): void {
-		this.absoluteBaseUrl = MePathUtils.stripTrailingSlashes(absUrl);
+		this.absoluteBaseUrl = ZynPathUtils.stripTrailingSlashes(absUrl);
 	}
 
 	public setRouter(router: Router): void {
 		this.router = router;
 	}
 
-	private addRouteInfo(method: ZynRouteMethod, route: string): void {
-		const name = this.parent.constructor.name;
-
-		this.routesInfo.push(
-			{
-				controllerName: name,
-				method        : method,
-				fullroute     : route
-			}
-		);
-	}
-
-	public assignParent(parent: IZynController): void {
+	public assignController(parent: IZynController): void {
 		this.parent = parent;
 	}
 
 	public get(route: string, func: Function): boolean {
-		return this.registerRoute(ZynRouteMethod.get, route, func);
+		return this.registerRoute(ZynRouteMethod.Get, route, func);
 	}
 
 	public post(route: string, func: Function): boolean {
-		return this.registerRoute(ZynRouteMethod.get, route, func);
+		return this.registerRoute(ZynRouteMethod.Get, route, func);
 	}
 
 	public delete(route: string, func: Function): boolean {
-		return this.registerRoute(ZynRouteMethod.delete, route, func);
+		return this.registerRoute(ZynRouteMethod.Delete, route, func);
 	}
 
 	public all(route: string, func: Function): boolean {
-		return this.registerRoute(ZynRouteMethod.all, route, func);
+		return this.registerRoute(ZynRouteMethod.Any, route, func);
 	}
 
 	public registerRoute(method: ZynRouteMethod, route: string, func: Function): boolean {
@@ -97,19 +89,19 @@ export class ZynRouterCore {
 
 		try {
 			switch (method) {
-				case ZynRouteMethod.get:
+				case ZynRouteMethod.Get:
 					this.router.get(route, func.bind(this.parent));
 					break;
 
-				case ZynRouteMethod.post:
+				case ZynRouteMethod.Post:
 					this.router.post(route, func.bind(this.parent));
 					break;
 
-				case ZynRouteMethod.delete:
+				case ZynRouteMethod.Delete:
 					this.router.delete(route, func.bind(this.parent));
 					break;
 
-				case ZynRouteMethod.all:
+				case ZynRouteMethod.Any:
 					this.router.all(route, func.bind(this.parent));
 					break;
 			}
@@ -139,6 +131,18 @@ export class ZynRouterCore {
 		}
 
 		console.table(routeInfoTable);
+	}
+
+	private addRouteInfo(method: ZynRouteMethod, route: string): void {
+		const name = this.parent.constructor.name;
+
+		this.routesInfo.push(
+			{
+				controllerName: name,
+				method        : method,
+				fullroute     : route
+			}
+		);
 	}
 
 }

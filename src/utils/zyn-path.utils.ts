@@ -5,15 +5,15 @@
  * @author: Patrik Forsberg <patrik.forsberg@coldmind.com>
  */
 
-export class MePathUtils {
+export class ZynPathUtils {
 	/**
 	 * Remove all trailing and leading slashes
 	 * @param {string} value
 	 * @returns {string}
 	 */
 	public static stripTrailingAndLeadingSlashes(value: string): string {
-		value = MePathUtils.stripLeadingSlashes(value);
-		return MePathUtils.stripTrailingSlashes(value);
+		value = ZynPathUtils.stripLeadingSlashes(value);
+		return ZynPathUtils.stripTrailingSlashes(value);
 	}
 
 	/**
@@ -22,7 +22,7 @@ export class MePathUtils {
 	 * @returns {string}
 	 */
 	public static ensureTrailingSlash(value: string): string {
-		return MePathUtils.stripTrailingSlashes(value) + "/";
+		return ZynPathUtils.stripTrailingSlashes(value) + "/";
 	}
 
 	/**

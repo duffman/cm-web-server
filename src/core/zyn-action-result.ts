@@ -2,8 +2,8 @@
  * @author: Patrik Forsberg <patrik.forsberg@coldmind.com>
 
  */
-import { IZynError }        from "../types/zyn-error.type";
 import { IZynActionResult } from "../types/zyn-action-result.type";
+import { IZynError }        from "../types/zyn-error.type";
 
 export class ZynActionResult<T = void> implements IZynActionResult<T> {
 	message: string;
@@ -12,12 +12,23 @@ export class ZynActionResult<T = void> implements IZynActionResult<T> {
 		public success: boolean = false,
 		public data?: T,
 		public error?: IZynError,
-	) {}
+	) {
+	}
 
-    public setMessage(value: string): IZynActionResult<T> {
-        this.message = value;
-        return this;
-    }
+	/**
+	 * Initialize action result object
+	 * @param {boolean} value
+	 * @returns {ActionResult<T>}
+	 * @constructor
+	 */
+	public static new<T = void>(value?: boolean): ZynActionResult<T> {
+		return new ZynActionResult<T>(value);
+	}
+
+	public setMessage(value: string): IZynActionResult<T> {
+		this.message = value;
+		return this;
+	}
 
 	public setSuccess(value: boolean = true): IZynActionResult<T> {
 		this.success = value;
@@ -37,15 +48,5 @@ export class ZynActionResult<T = void> implements IZynActionResult<T> {
 		}
 
 		return this;
-	}
-
-	/**
-	 * Initialize action result object
-	 * @param {boolean} value
-	 * @returns {ActionResult<T>}
-	 * @constructor
-	 */
-	public static new<T = void>(value?: boolean): ZynActionResult<T> {
-		return new ZynActionResult<T>(value);
 	}
 }

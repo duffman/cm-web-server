@@ -6,7 +6,7 @@
 import EventEmitter  from "events";
 import { singleton } from "tsyringe";
 
-//@singleton()
+@singleton()
 export class ZynLogger extends EventEmitter {
 	constructor() {
 		super();

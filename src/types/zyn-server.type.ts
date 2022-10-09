@@ -7,14 +7,13 @@
  */
 
 import { IZynLogEventData } from "../core/zyn-events";
-import { ZynEventType }     from "../core/zyn-events";
-import { IZynEvent }        from "../core/zyn-events";
 import { IZynActionResult } from "./zyn-action-result.type";
 import { IZynController }   from "./zyn-controller.type";
 import { IZynError }        from "./zyn-error.type";
 import { ZynMiddleware }    from "./zyn-middleware.type";
 
 export interface IZynServer {
+	enableAccessLogger(): IZynServer;
 	setCors(path?: string): IZynServer;
 	setViewEngine(name: string): IZynServer;
 	setStaticRoot(rootPath: string): IZynServer;

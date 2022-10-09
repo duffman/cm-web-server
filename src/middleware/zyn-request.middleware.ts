@@ -9,25 +9,27 @@ import { NextFunction } from "express";
 import { Response }     from "express";
 import { Request }      from "express";
 
-export function zynRequestMiddleware(req: Request, response: Response, next: NextFunction) {
+export const zynRequestMiddleware = (req: Request, resp: Response, next: NextFunction) => {
+	resp.setHeader('x-powered-by', 'Zynaptic')
+
 	req.paramData = new Map<string, any>();
 
 	if (req.params) {
 		for (const param in req.params) {
 			if (req.params.hasOwnProperty(param))
-				req.paramData.set(param, req.params[param]);
+				req.paramData.set(param, req.params[ param ]);
 		}
 	}
 
 	if (req.query) {
 		for (const param in req.query) {
 			if (req.query.hasOwnProperty(param))
-				req.paramData.set(param, req.query[param]);
+				req.paramData.set(param, req.query[ param ]);
 		}
 	}
 
-	req.getParam = function<T>(name: string, def?: T): T {
-		return  req.paramData.get(name) as T ?? def;
+	req.getParam = function <T>(name: string, def?: T): T {
+		return req.paramData.get(name) as T ?? def;
 	}
 
 	req.getParamStr = function(name: string, def?: string): string {

@@ -10,6 +10,26 @@
 		"baseUrl":                          "./src",
 		"rootDir":                          "./src",
 		"outDir":                           "./lib",
+
+
+		"allowJs": true,
+
+		// Generate d.ts files
+		"declaration": true,
+
+		// This compiler run should
+		// only output d.ts files
+		//"emitDeclarationOnly": true,
+
+		// Types should go into this directory.
+		// Removing this would place the .d.ts files
+		// next to the .js files
+
+		// go to js file when using IDE functions like
+		// "Go to Definition" in VSCode
+		"declarationMap": true,
+
+
 		"moduleResolution":                 "node",
 		"sourceMap":                        true,
 		"sourceRoot":                       "./src",
@@ -17,5 +37,12 @@
 		"forceConsistentCasingInFileNames": true,
 		"strict":                           false,
 		"skipLibCheck":                     true
-	}
+	},
+	"exclude":         [
+		"node_modules",
+		"lib"
+	],
+	"include":         [
+		"src"
+	]
 }

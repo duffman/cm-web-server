@@ -4,9 +4,6 @@
  * Proprietary and confidential.
  */
 
-import { ProviderSession } from "@provider/provider-session";
-import { IProviderSession } from "@root/core/session-manager";
-
 export {};
 
 declare global {

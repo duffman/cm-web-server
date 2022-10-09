@@ -3,10 +3,10 @@
  * @date: 2022-09-27 11:57
  */
 
+import { Response }         from "express";
+import { ZynRouterCore }    from "../core/zyn-router-core";
 import { IZynActionResult } from "../types/zyn-action-result.type";
-import { ZynRouterCore }  from "../core/zyn-router-core";
-import { IZynController } from "../types/zyn-controller.type";
-import { Response }       from "express";
+import { IZynController }   from "../types/zyn-controller.type";
 
 export abstract class ZynBaseController implements IZynController {
 	private _baseRoute: string = "";
@@ -25,8 +25,10 @@ export abstract class ZynBaseController implements IZynController {
 
 	public sendActionResult(resp: Response, actionRes: IZynActionResult) {
 		if (actionRes.success) {
-			resp.status(200);  resp.json(actionRes);
-		} else {
+			resp.status(200);
+			resp.json(actionRes);
+		}
+		else {
 			resp.json(
 				{
 					error: actionRes?.error?.code
@@ -40,7 +42,7 @@ export abstract class ZynBaseController implements IZynController {
 		resp.json(
 			{
 				success: false,
-				error: error
+				error  : error
 			}
 		);
 	}

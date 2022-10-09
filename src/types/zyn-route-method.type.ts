@@ -6,8 +6,8 @@
  */
 
 export enum ZynRouteMethod {
-	all    = "all",
-	get    = "get",
-	post   = "post",
-	delete = "delete"
+	Any    = "all",
+	Get    = "get",
+	Post   = "post",
+	Delete = "delete"
 }

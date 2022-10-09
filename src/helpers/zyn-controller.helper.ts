@@ -5,10 +5,10 @@
  * @author: Patrik Forsberg <patrik.forsberg@coldmind.com>
  */
 
-import { IZynActionResult }       from "../types/zyn-action-result.type";
-import { ZynapticHttpStatusCode } from "../types/zyn-http-status.type";
-import { Response }               from "express";
-import { injectable }             from "tsyringe";
+import { Response }         from "express";
+import { injectable }       from "tsyringe";
+import { IZynActionResult } from "../types/zyn-action-result.type";
+import { ZynHttpStatus }    from "../types/zyn-http-status.type";
 
 @injectable()
 export class ZynControllerHelper {
@@ -26,7 +26,7 @@ export class ZynControllerHelper {
 		}
 	}
 
-	protected async send(resp: Response, statusCode: ZynapticHttpStatusCode, data?: any) {
+	protected async send(resp: Response, statusCode: ZynHttpStatus, data?: any) {
 	}
 
 	protected async notFound(resp: Response): Promise<void> {
